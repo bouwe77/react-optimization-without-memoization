@@ -43,7 +43,6 @@ export default function App() {
 function Stuff({ filter = "" }) {
   const { stuff, status } = useStuff(filter);
   useEffect(() => console.log(`render Stuff, status: ${status}`));
-  // const rerender = useForceRerender("Stuff");
 
   if (status === "loading") return <div>loading...</div>;
   if (status === "error") return <div>error...</div>;
