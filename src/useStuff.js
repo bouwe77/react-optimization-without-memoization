@@ -18,6 +18,7 @@ export default function useStuff(filter) {
   // Because of the filter2 state, the actual filtering only takes
   // place when the filter really changed.
   useEffect(() => {
+    console.log("filtering...");
     const filteredStuff =
       filter2.length > 0
         ? allStuff.filter((s) => s.kind === filter2)

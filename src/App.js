@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useStuff from "./useStuff";
 
 // Three ways of optimizing without memoization:
@@ -11,13 +11,14 @@ import useStuff from "./useStuff";
 // const rerender = useForceRerender();
 function useForceRerender(name) {
   const [, setState] = useState();
-  // useEffect(() => console.log(`render ${name}...`));
   return () => setState((prevState) => !prevState);
 }
 
 export default function App() {
   const rerender = useForceRerender("App");
   const [currentFilter, setCurrentFilter] = useState("");
+  useEffect(() => console.log(`render App, filter: ${currentFilter}`));
+
   const filters = ["", "bla", "poef"];
 
   return (
@@ -26,6 +27,7 @@ export default function App() {
 
       {filters.map((filter) => (
         <button
+          key={filter}
           style={{ border: filter === currentFilter ? "1px solid blue" : 0 }}
           onClick={() => setCurrentFilter(filter)}
         >
@@ -40,14 +42,14 @@ export default function App() {
 
 function Stuff({ filter = "" }) {
   const { stuff, status } = useStuff(filter);
-  const rerender = useForceRerender("Stuff");
+  useEffect(() => console.log(`render Stuff, status: ${status}`));
+  // const rerender = useForceRerender("Stuff");
 
   if (status === "loading") return <div>loading...</div>;
   if (status === "error") return <div>error...</div>;
 
   return (
     <div style={{ border: "1px solid darkblue" }}>
-      <button onClick={rerender}>Click to rerender</button>
       <div>
         {stuff.map((s) => (
           <div key={s.id}>{s.name}</div>
