@@ -9,16 +9,20 @@ import stuff from "./stuff";
 // Use this hook to be able to rerender a component when the component has no state.
 // Usage: Call the hook, and then call the function returned by the hook when you want to rerender.
 // const rerender = useForceRerender();
-function useForceRerender() {
+function useForceRerender(name) {
   const [, setState] = useState();
-  useEffect(() => console.log("render..."));
+  useEffect(() => console.log(`render ${name}...`));
   return () => setState((prevState) => !prevState);
 }
 
 function getStuff() {
   return new Promise((resolve, _) => {
     setTimeout(() => {
-      resolve(stuff);
+      const stuff2 = stuff.map((s) => ({
+        ...s,
+        id: Math.floor(Math.random() * (1000 - 1) + 1)
+      }));
+      resolve(stuff2);
     }, 500);
   });
 }
@@ -28,7 +32,7 @@ function useStuff() {
   const [status, setStatus] = useState("idle");
 
   useEffect(() => {
-    (async () => {
+    const fetchStuff = async () => {
       setStatus("loading");
       try {
         const stuff = await getStuff();
@@ -37,20 +41,36 @@ function useStuff() {
       } catch (error) {
         setStatus("error");
       }
-    })();
+    };
+
+    fetchStuff();
   }, []);
 
   return { stuff, status };
 }
 
 export default function App() {
-  const rerender = useForceRerender();
-  const { stuff, status } = useStuff();
+  const rerender = useForceRerender("App");
 
   return (
     <div>
       <button onClick={rerender}>Click to rerender</button>
 
+      <div style={{ border: "1px solid darkblue" }}>
+        <Stuff />
+      </div>
+    </div>
+  );
+}
+
+function Stuff() {
+  const { stuff, status } = useStuff();
+
+  const rerender = useForceRerender("Stuff");
+
+  return (
+    <>
+      <button onClick={rerender}>Click to rerender</button>
       {status === "loading" ? (
         <div>loading...</div>
       ) : status === "error" ? (
@@ -58,10 +78,12 @@ export default function App() {
       ) : (
         <div>
           {stuff.map((s) => (
-            <div key={s.id}>{s.name}</div>
+            <div key={s.id}>
+              {s.id} {s.name}
+            </div>
           ))}
         </div>
       )}
-    </div>
+    </>
   );
 }
