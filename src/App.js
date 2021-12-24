@@ -33,9 +33,7 @@ export default function App() {
         </button>
       ))}
 
-      <div style={{ border: "1px solid darkblue" }}>
-        <Stuff filter={currentFilter} />
-      </div>
+      <Stuff filter={currentFilter} />
     </div>
   );
 }
@@ -48,13 +46,13 @@ function Stuff({ filter = "" }) {
   if (status === "error") return <div>error...</div>;
 
   return (
-    <>
+    <div style={{ border: "1px solid darkblue" }}>
       <button onClick={rerender}>Click to rerender</button>
       <div>
         {stuff.map((s) => (
           <div key={s.id}>{s.name}</div>
         ))}
       </div>
-    </>
+    </div>
   );
 }
