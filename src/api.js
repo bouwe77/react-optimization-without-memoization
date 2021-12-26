@@ -5,6 +5,8 @@ const movies = [
   { id: 4, title: "Home Alone", genre: "Comedy" }
 ];
 
+const genres = [...new Set(movies.map((movie) => movie.genre))];
+
 export function getMovies() {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -16,7 +18,7 @@ export function getMovies() {
 export function getGenres() {
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve(movies.map((movie) => movie.genre));
+      resolve(genres);
     }, 500);
   });
 }
