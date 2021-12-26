@@ -1,13 +1,22 @@
-const stuff = [
-  { id: 1, name: "Miep", kind: "poef" },
-  { id: 2, name: "Kees", kind: "bla" },
-  { id: 3, name: "Piet", kind: "poef" }
+const movies = [
+  { id: 1, title: "Star Trek: First Contact", genre: "Science Fiction" },
+  { id: 2, title: "O Brother, Where Art Thou?", genre: "Comedy" },
+  { id: 3, title: "The Silence of the Lambs", genre: "Thriller" },
+  { id: 4, title: "Home Alone", genre: "Comedy" }
 ];
 
-export default function getStuff() {
+export function getMovies() {
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve(stuff);
+      resolve(movies);
+    }, 500);
+  });
+}
+
+export function getGenres() {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(movies.map((movie) => movie.genre));
     }, 500);
   });
 }

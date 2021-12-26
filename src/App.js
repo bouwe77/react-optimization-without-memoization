@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import useStuff from "./useStuff";
+import { useMovies, useGenres } from "./useMovies";
 
 // Three ways of optimizing without memoization:
 // [1] Render children coming from parent
@@ -9,40 +9,40 @@ import useStuff from "./useStuff";
 // Use this hook to be able to rerender a component when the component has no state.
 // Usage: Call the hook, and then call the function returned by the hook when you want to rerender.
 // const rerender = useForceRerender();
-function useForceRerender(name) {
+function useForceRerender() {
   const [, setState] = useState();
   return () => setState((prevState) => !prevState);
 }
 
 export default function App() {
-  const rerender = useForceRerender("App");
+  const rerender = useForceRerender();
   const [currentFilter, setCurrentFilter] = useState("");
-  useEffect(() => console.log(`render App, filter: ${currentFilter}`));
+  useEffect(() => console.log(`render App, genre: ${currentFilter}`));
 
-  const filters = ["", "bla", "poef"];
+  const { genres, status } = useGenres();
 
   return (
     <div>
       <button onClick={rerender}>Click to rerender</button>
 
-      {filters.map((filter) => (
+      {genres.map((genre) => (
         <button
-          key={filter}
-          style={{ border: filter === currentFilter ? "1px solid blue" : 0 }}
-          onClick={() => setCurrentFilter(filter)}
+          key={genre}
+          style={{ border: genre === currentFilter ? "1px solid blue" : 0 }}
+          onClick={() => setCurrentFilter(genre)}
         >
-          {filter || "all"}
+          {genre || "All"}
         </button>
       ))}
 
-      <Stuff filter={currentFilter} />
+      <Movies genre={currentFilter} />
     </div>
   );
 }
 
-function Stuff({ filter = "" }) {
-  const { stuff, status } = useStuff(filter);
-  useEffect(() => console.log(`render Stuff, status: ${status}`));
+function Movies({ genre = "" }) {
+  const { movies, status } = useMovies(genre);
+  useEffect(() => console.log(`render Movies, status: ${status}`));
 
   if (status === "loading") return <div>loading...</div>;
   if (status === "error") return <div>error...</div>;
@@ -50,8 +50,8 @@ function Stuff({ filter = "" }) {
   return (
     <div style={{ border: "1px solid darkblue" }}>
       <div>
-        {stuff.map((s) => (
-          <div key={s.id}>{s.name}</div>
+        {movies.map((s) => (
+          <div key={s.id}>{s.title}</div>
         ))}
       </div>
     </div>
